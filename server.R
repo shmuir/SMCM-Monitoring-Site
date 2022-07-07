@@ -24,4 +24,7 @@ server <- function(input, output, session) {
       scale_color_viridis_d()
     
   })
+  
 }
+
+

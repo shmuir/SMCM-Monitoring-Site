@@ -50,19 +50,24 @@ main_content <- mainPanel(
   plotOutput("plot")
 )
 
-second_panel <- tabPanel(
-  "Visualization",
-  titlePanel("Characteristics"),
-  p("Use the selector input below to choose which variable you would like to see."),
-  sidebarLayout(
-    sidebar_content, main_content
-  )
-)
+second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
+           tabPanel("YSI",
+                    titlePanel("YSI"),
+                    p("Use the selector input below to choose which variable you would like to see."),
+                    sidebarLayout(
+                      sidebar_content, main_content)
+           
+           ))
+
+third_panel <- navbarMenu("Data",
+                          tabPanel("YSI"))
+
 
 # User Interface -----------------------------------------------------
 ui <- navbarPage(
   "Dock monitoring",
   intro_panel,
-  second_panel
+  second_panel,
+  third_panel
 )
 
