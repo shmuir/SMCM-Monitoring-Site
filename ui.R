@@ -41,8 +41,9 @@ sidebar_content <- sidebarPanel(
     label = "Y Variable",
     choices = select_values,
     selected = 'datetime'),
-  dateRangeInput("datetime", 
-                 "Select a Date Range"),
+  dateRangeInput("datetime",
+                 "Select a Date Range",
+                 start = "2022-05-25"),
 )
 
 main_content <- mainPanel(
