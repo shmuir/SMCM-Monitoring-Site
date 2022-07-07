@@ -64,3 +64,4 @@ ui <- navbarPage(
   intro_panel,
   second_panel
 )
+
