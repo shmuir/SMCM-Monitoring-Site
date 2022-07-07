@@ -25,6 +25,31 @@ server <- function(input, output, session) {
     
   })
   
+  output$dock_table <- DT::renderDataTable({
+    
+    
+    dock_data_tab <- dock_data %>% 
+      select(datetime, salinity, ph, temp_c, do_percent, do_mg_l)
+    
+    
+    DT::datatable(dock_data_tab,
+                  extensions = "Scroller",
+                  filter = "top", options = list(
+                    deferRender = TRUE,
+                    scrollY = 200,
+                    scroller = TRUE
+                  ),
+                  rownames = FALSE,
+                  colnames = c("Date",
+                               "Salinity",
+                               "ph",
+                               "Temperature (ºC)",
+                               "DO Percent",
+                               "DO (mg/l)")
+    )
+    
+  })  
+  
 }
 
 

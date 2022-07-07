@@ -47,7 +47,8 @@ sidebar_content <- sidebarPanel(
 )
 
 main_content <- mainPanel(
-  plotOutput("plot")
+  plotOutput("plot"),
+  DT::dataTableOutput("dock_table")
 )
 
 second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
@@ -59,15 +60,11 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
            
            ))
 
-third_panel <- navbarMenu("Data",
-                          tabPanel("YSI"))
-
 
 # User Interface -----------------------------------------------------
 ui <- navbarPage(
   "Dock monitoring",
   intro_panel,
-  second_panel,
-  third_panel
+  second_panel
 )
 
