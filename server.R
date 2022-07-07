@@ -18,7 +18,7 @@ server <- function(input, output, session) {
   
   output$plot <- renderPlot({
     ggplot(data=subdata(), aes_string(x="datetime", y=input$y_var, color="depth_m")) +
-      geom_point() +
+      geom_point(size = 2.5) +
       labs(x="", y=input$y_var) +
       theme_light() +
       scale_color_viridis_d()
