@@ -28,7 +28,7 @@ intro_panel <- tabPanel(
   
   p("Some stuff about the project"),
   
- # p(a(href = "https://", "Data Source")) #can add link to data
+ #p(a(href = "https://", "Data Source")) #can add link to data
 )
 
 # Page 2 - Vizualization -------------------------------------------
@@ -60,11 +60,20 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
            
            ))
 
+weather_panel <- tabPanel("Weather",
+                          titlePanel("Weather"),
+                          tags$div(
+                            "SMCM dock has a",
+                            tags$a(href="https://tempestwx.com/station/69060/", 
+                                   "tempest weather station")
+                          ))
+
 
 # User Interface -----------------------------------------------------
 ui <- navbarPage(
   "Dock monitoring",
   intro_panel,
-  second_panel
+  second_panel,
+  weather_panel
 )
 
