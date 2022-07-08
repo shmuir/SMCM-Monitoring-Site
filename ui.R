@@ -11,6 +11,13 @@ ysi_data <- read_sheet("https://docs.google.com/spreadsheets/d/19E9JgnPOJ6_OhN-H
 secchi_data <- read_sheet("https://docs.google.com/spreadsheets/d/141nNE5e3-pN_fidfUrbYLAT2zkTolqzwXAnX-LqmHYk/edit?usp=sharing") %>%
   select(sample_date, secchi_depth_m)
 
+licor_data <- read_sheet("https://docs.google.com/spreadsheets/d/1zz6CgaQ7AfsfxxM9EBBqt_9tstSGnJvC6InhXsO0Pm4/edit?usp=sharing") %>%
+  select(sample_date, sample_time, depth_m, prop_air) %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"),
+         datetime = ymd_hms(paste(sample_date, sample_time)),
+         depth_m = as.factor(depth_m)) %>%
+  filter(prop_air <= 1.5)
+
 dock_data <- ysi_data %>%
   left_join(secchi_data) %>%
   mutate(datetime = ymd_hms(paste(sample_date, sample_time))) %>%
@@ -35,7 +42,7 @@ intro_panel <- tabPanel(
 select_values <- colnames(dock_data)
 select_values <- select_values[select_values %in% c('salinity', "ph", "temp_c", "do_percent", "do_mg_l", "salinity")] # remove unwanted columns
 
-sidebar_content <- sidebarPanel(
+ysi_sidebar <- sidebarPanel(
   selectInput(
     "y_var",
     label = "Y Variable",
@@ -43,12 +50,20 @@ sidebar_content <- sidebarPanel(
     selected = 'datetime'),
   dateRangeInput("datetime",
                  "Select a Date Range",
-                 start = "2022-05-25"),
-)
+                 start = "2022-05-25"),)
 
-main_content <- mainPanel(
-  plotOutput("plot"),
-  DT::dataTableOutput("dock_table")
+ysi_main <- mainPanel(
+  plotOutput("ysi_plot"),
+  DT::dataTableOutput("dock_table"))
+
+licor_sidebar <- sidebarPanel(
+    dateRangeInput("datetime",
+                             "Select a Date Range",
+                             start = "2022-05-25"),)
+
+licor_main <- mainPanel(
+  plotOutput("licor_plot"),
+  DT::dataTableOutput("licor_table")
 )
 
 second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
@@ -56,9 +71,16 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
                     titlePanel("YSI"),
                     p("Use the selector input below to choose which variable you would like to see."),
                     sidebarLayout(
-                      sidebar_content, main_content)
+                      ysi_sidebar, ysi_main)
            
-           ))
+           ),
+           tabPanel("Licor",
+                    titlePanel("Licor"),
+                    sidebarLayout(
+                      licor_sidebar, licor_main)
+                    )
+           
+           )
 
 weather_panel <- tabPanel("Weather",
                           titlePanel("Weather"),
