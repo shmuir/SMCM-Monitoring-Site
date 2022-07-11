@@ -59,7 +59,7 @@ ysi_main <- mainPanel(
 licor_sidebar <- sidebarPanel(
     dateRangeInput("datetime",
                              "Select a Date Range",
-                             start = "2022-05-25"),)
+                             start = "2022-05-25"))
 
 licor_main <- mainPanel(
   plotOutput("licor_plot"),
