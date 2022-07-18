@@ -24,6 +24,15 @@ server <- function(input, output, session) {
                                      select_values == input$select_values))
   })
   
+  subdata_nutrient <- reactive({
+    nutrient_data %>%
+      filter(
+        as.Date(date_time) >= as.Date(input$date_time[1]),
+        as.Date(date_time) <= as.Date(input$date_time[2], 
+                                     select_nutrient == input$select_nutrient))
+    
+  })
+  
   output$ysi_plot <- renderPlot({
     ggplot(data=subdata(), aes_string(x="datetime", y=input$y_var, color="depth_m")) +
       geom_point(size = 2.5) +
@@ -87,6 +96,40 @@ server <- function(input, output, session) {
     #)
     
  # })
+  
+  output$nutrient_plot <- renderPlot({
+    ggplot(data=subdata_nutrient(), aes_string(x="date_time", y="mg_l", color = "nutrient")) +
+      geom_point(size = 2.5) +
+      geom_line() +
+      labs(x="", y="mg/l") +
+      theme_light() +
+      scale_color_viridis_d()
+    
+  })
+  
+  output$nutrient_tab <- DT::renderDataTable({
+    
+    
+    nutrient_tab <- nutrient_dattab %>% 
+      select(date_time, nh3_mg_l, no3_l_mg_l, po4_mg_l)
+    
+    
+    DT::datatable(nutrient_tab,
+                  extensions = "Scroller",
+                  filter = "top", options = list(
+                    deferRender = TRUE,
+                    scrollY = 200,
+                    scroller = TRUE
+                  ),
+                  rownames = FALSE,
+                  colnames = c("Date",
+                               "NH3",
+                               "NO3",
+                               "PO4")
+    )
+    
+  }) 
+  
   
     observe({ 
       weather <<- paste0("https://tempestwx.com/station/69060/")

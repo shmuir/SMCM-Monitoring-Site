@@ -1,10 +1,12 @@
-# Load libraries, data -----------------------------------------------
+# Load libraries -----------------------------------------------
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
 
+
+# Data ----------------------------------------------------------
 ysi_data <- read_sheet("https://docs.google.com/spreadsheets/d/19E9JgnPOJ6_OhN-Het-EC9rVEH-qPRPNovM0TV-f6lQ/edit?usp=sharing") %>%
   mutate(sample_time = format(sample_time,"%H:%M:%S"))
 
@@ -15,6 +17,17 @@ licor_data <- read_sheet("https://docs.google.com/spreadsheets/d/1zz6CgaQ7Afsfxx
   mutate(sample_time = format(sample_time,"%H:%M:%S"),
          datetime = ymd_hms(paste(sample_date, sample_time))) 
 
+nutrient_data <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4ZvZrWyQ9-EZjXdom1vREmvO7BC4zhhsg1I/edit?usp=sharing") %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"),
+         date_time = ymd_hms(paste(sample_date, sample_time))) %>%
+  pivot_longer(., 4:7, names_to = "nutrient") %>%
+  rename(mg_l = value) %>%
+  filter(nutrient != "no3_m_mg_l")
+
+nutrient_dattab <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4ZvZrWyQ9-EZjXdom1vREmvO7BC4zhhsg1I/edit?usp=sharing") %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"),
+         date_time = ymd_hms(paste(sample_date, sample_time)))
+  
 dock_data <- ysi_data %>%
   left_join(secchi_data) %>%
   mutate(datetime = ymd_hms(paste(sample_date, sample_time))) %>%
@@ -22,7 +35,7 @@ dock_data <- ysi_data %>%
          do_mg_l <= 10, do_mg_l >= 2.5)
 
 
-# Page 1 - Introduction ----------------------------------------------
+# Page 1 - About ----------------------------------------------
 intro_panel <- tabPanel(
   "About", icon = icon("info"),
   
@@ -33,13 +46,13 @@ intro_panel <- tabPanel(
   
   p("Some stuff about the project"),
   
- #p(a(href = "https://", "Data Source")) #can add link to data
-)
+  )
 
 # Page 2 - Vizualization -------------------------------------------
 select_values <- colnames(dock_data)
 select_values <- select_values[select_values %in% 
                                  c('salinity', "ph", "temp_c", "do_percent", "do_mg_l", "salinity")]
+
 
 ysi_sidebar <- sidebarPanel(
   selectInput(
@@ -64,6 +77,16 @@ licor_main <- mainPanel(
   plotOutput("licor_plot"),
   DT::dataTableOutput("licor_table"))
 
+nutrient_sidebar <- sidebarPanel(
+  dateRangeInput("date_time",
+                 "Select a Date Range",
+                 start = "2022-06-28"))
+
+nutrient_main <- mainPanel(
+  plotOutput("nutrient_plot"),
+  DT::dataTableOutput("nutrient_tab"))
+
+
 second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
            tabPanel("YSI",
                     titlePanel("YSI"),
@@ -76,11 +99,15 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
                    titlePanel("Licor"),
                    sidebarLayout(
                      licor_sidebar, licor_main)
-                    )
+                    ),
+           tabPanel("Nutrients",
+                    titlePanel("Nutrients"),
+                    sidebarLayout(
+                      nutrient_sidebar, nutrient_main)
            
-           )
+           ))
 
-
+# Page 3 - Weather --------------------------------------------------
 weather_panel <- tabPanel("Weather", icon = icon("cloud-sun"),
                           titlePanel("Weather"), 
           sidebarLayout(
