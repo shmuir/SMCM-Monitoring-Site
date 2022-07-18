@@ -12,11 +12,8 @@ secchi_data <- read_sheet("https://docs.google.com/spreadsheets/d/141nNE5e3-pN_f
   select(sample_date, secchi_depth_m)
 
 licor_data <- read_sheet("https://docs.google.com/spreadsheets/d/1zz6CgaQ7AfsfxxM9EBBqt_9tstSGnJvC6InhXsO0Pm4/edit?usp=sharing") %>%
-  select(sample_date, sample_time, depth_m, par_water_ue_m2_s, par_air_ue_m2_s, prop_air) %>%
   mutate(sample_time = format(sample_time,"%H:%M:%S"),
-         datetime = ymd_hms(paste(sample_date, sample_time)),
-         depth_m = as.factor(depth_m)) %>%
-  filter(prop_air <= 1.5)
+         datetime = ymd_hms(paste(sample_date, sample_time))) 
 
 dock_data <- ysi_data %>%
   left_join(secchi_data) %>%
@@ -24,13 +21,14 @@ dock_data <- ysi_data %>%
   filter(do_percent <= 125, do_percent >= 25,
          do_mg_l <= 10, do_mg_l >= 2.5)
 
+
 # Page 1 - Introduction ----------------------------------------------
 intro_panel <- tabPanel(
   "About", icon = icon("info"),
   
   titlePanel("SMCM Dock Monitoring"),
   
-  img(src = "smcm_water.jpg", height = 400, width = 800),
+  img(src = "", height = 400, width = 800),
   br(), br(),
   
   p("Some stuff about the project"),
@@ -75,20 +73,23 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
            
            ),
            tabPanel("Licor",
-                    titlePanel("Licor"),
-                    sidebarLayout(
-                      licor_sidebar, licor_main)
+                   titlePanel("Licor"),
+                   sidebarLayout(
+                     licor_sidebar, licor_main)
                     )
            
            )
 
+
 weather_panel <- tabPanel("Weather", icon = icon("cloud-sun"),
-                          titlePanel("Weather"),
-                          tags$div(
-                            "SMCM dock has a",
-                            tags$a(href="https://tempestwx.com/station/69060/", 
-                                   "tempest weather station")
-                          ))
+                          titlePanel("Weather"), 
+          sidebarLayout(
+            sidebarPanel("SMCM dock has a tempest weather station"),
+            mainPanel(fluidRow(
+              htmlOutput("frame")
+            )
+            )
+          ))
 
 
 # User Interface -----------------------------------------------------

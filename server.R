@@ -58,35 +58,44 @@ server <- function(input, output, session) {
     
   }) 
   
-  output$licor_plot <- renderPlot({
-    ggplot(data=subdata_licor(), aes_string(x="datetime", y="prop_air", color="depth_m")) +
-      geom_point(size = 2.5) +
-      labs(x="", y="air_prop") +
-      theme_light() +
-      scale_color_viridis_d()
-  })
+  #output$licor_plot <- renderPlot({
+    #ggplot(data=subdata_licor(), aes_string(x="datetime", y="prop_air", color="depth_m")) +
+     # geom_point(size = 2.5) +
+     # labs(x="", y="air_prop") +
+     # theme_light() +
+      #scale_color_viridis_d()
+  #})
   
-  output$licor_table <- DT::renderDataTable({
+  #output$licor_table <- DT::renderDataTable({
     
     
-    licor_data_tab <- licor_data %>% 
-      select(datetime, depth_m, prop_air)
+    #licor_data_tab <- licor_data %>% 
+      #select(datetime, depth_m, prop_air)
     
     
-    DT::datatable(licor_data_tab,
-                  extensions = "Scroller",
-                  filter = "top", options = list(
-                    deferRender = TRUE,
-                    scrollY = 200,
-                    scroller = TRUE
-                  ),
-                  rownames = FALSE,
-                  colnames = c("Date",
-                               "Depth (m)",
-                               "Prop.")
-    )
+   # DT::datatable(licor_data_tab,
+               #   extensions = "Scroller",
+                #  filter = "top", options = list(
+                 #   deferRender = TRUE,
+                  #  scrollY = 200,
+                  #  scroller = TRUE
+                 # ),
+                 # rownames = FALSE,
+                 # colnames = c("Date",
+                            #   "Depth (m)",
+                            #   "Prop.")
+    #)
     
-  }) 
+ # })
+  
+    observe({ 
+      weather <<- paste0("https://tempestwx.com/station/69060/")
+    })
+    output$frame <- renderUI({
+      dock_weather <- tags$iframe(src=weather, height=600, width=600)
+      print(dock_weather)
+      dock_weather
+    })
   
 }
 
