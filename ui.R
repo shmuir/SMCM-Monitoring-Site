@@ -4,6 +4,8 @@ library(shinydashboard)
 library(tidyverse)
 library(lubridate)
 library(googlesheets4)
+library(httr)
+library(jsonlite)
 
 
 # Data ----------------------------------------------------------
@@ -21,8 +23,7 @@ nutrient_data <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4Zv
   mutate(sample_time = format(sample_time,"%H:%M:%S"),
          date_time = ymd_hms(paste(sample_date, sample_time))) %>%
   pivot_longer(., 4:7, names_to = "nutrient") %>%
-  rename(mg_l = value) %>%
-  filter(nutrient != "no3_m_mg_l")
+  rename(mg_l = value)
 
 nutrient_dattab <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4ZvZrWyQ9-EZjXdom1vREmvO7BC4zhhsg1I/edit?usp=sharing") %>%
   mutate(sample_time = format(sample_time,"%H:%M:%S"),
@@ -33,6 +34,8 @@ dock_data <- ysi_data %>%
   mutate(datetime = ymd_hms(paste(sample_date, sample_time))) %>%
   filter(do_percent <= 125, do_percent >= 25,
          do_mg_l <= 10, do_mg_l >= 2.5)
+
+weather <- read_rds("weather-smcmdock.rds")
 
 
 # Page 1 - About ----------------------------------------------
@@ -108,15 +111,39 @@ second_panel <- navbarMenu("Visualizaton", icon = icon("chart-bar"),
            ))
 
 # Page 3 - Weather --------------------------------------------------
-weather_panel <- tabPanel("Weather", icon = icon("cloud-sun"),
-                          titlePanel("Weather"), 
-          sidebarLayout(
-            sidebarPanel("SMCM dock has a tempest weather station"),
-            mainPanel(fluidRow(
-              htmlOutput("frame")
-            )
-            )
-          ))
+
+weather_select <- colnames(weather)
+weather_select <- weather_select[weather_select %in% 
+                                 c('wind_avg', "wind_mph", "pressure", "airtemp", "rel_hum", "illum", "uv_index", "solar_rad", "rain_accum","day_rain_accum", "strike_ct")]
+
+weather_main <- mainPanel(
+  plotOutput("weather_plot"),
+  DT::dataTableOutput("weather_table"))
+  
+weather_sidebar <- sidebarPanel(
+  selectInput(
+    "y_variable",
+    label = "Y Variable",
+    choices = weather_select,
+    selected = 'datetime'),
+  dateRangeInput("datetime",
+                 "Select a Date Range",
+                 start = "2022-05-25"),)
+  
+  
+weather_panel <- navbarMenu("Weather", icon = icon("cloud-sun"),
+            tabPanel("Current Weather",
+                     titlePanel("Current Weather"), 
+                     sidebarLayout(
+                       sidebarPanel("SMCM dock has a tempest weather station"),
+                       mainPanel(fluidRow(htmlOutput("frame"))))
+          ),
+          tabPanel("Weather History",
+                   titlePanel("Weather History"),
+                   sidebarLayout(
+                     weather_sidebar, weather_main)
+                   ))
+
 
 
 # User Interface -----------------------------------------------------

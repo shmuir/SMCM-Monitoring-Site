@@ -1,7 +1,5 @@
-# Load libraries, data ------------------------------------------------
+# Load libraries ------------------------------------------------
 library(ggplot2)
-
-dock_data <- dock_data
 
 
 # Create server -------------------------------------------------------
@@ -33,9 +31,19 @@ server <- function(input, output, session) {
     
   })
   
+  subdata_weather <- reactive({
+    weather %>%
+      filter(
+        as.Date(datetime) >= as.Date(input$datetime[1]),
+        as.Date(datetime) <= as.Date(input$datetime[2], 
+                                      weather_select == input$weather_select))
+    
+  })
+  
   output$ysi_plot <- renderPlot({
     ggplot(data=subdata(), aes_string(x="datetime", y=input$y_var, color="depth_m")) +
       geom_point(size = 2.5) +
+      geom_line() +
       labs(x="", y=input$y_var) +
       theme_light() +
       scale_color_viridis_d()
@@ -111,7 +119,7 @@ server <- function(input, output, session) {
     
     
     nutrient_tab <- nutrient_dattab %>% 
-      select(date_time, nh3_mg_l, no3_l_mg_l, po4_mg_l)
+      select(date_time, nh3_mg_l, no3_l_mg_l, no3_m_mg_l, po4_mg_l)
     
     
     DT::datatable(nutrient_tab,
@@ -124,8 +132,49 @@ server <- function(input, output, session) {
                   rownames = FALSE,
                   colnames = c("Date",
                                "NH3",
-                               "NO3",
+                               "NO3 low",
+                               "NO3 high", 
                                "PO4")
+    )
+    
+  }) 
+  
+  output$weather_plot <- renderPlot({
+    ggplot(data=subdata_weather(), aes_string(x="datetime", y=input$y_variable)) +
+      geom_point(size = 2.5) +
+      geom_line() +
+      labs(x="", y=input$y_variable) +
+      theme_light() +
+      scale_color_viridis_d()
+    
+  })
+  
+  output$weather_table <- DT::renderDataTable({
+    
+    
+    weather_table <- weather %>% 
+      select(datetime, wind_avg, pressure, airtemp, rel_hum, illum, uv_index, solar_rad, rain_accum, day_rain_accum, strike_ct)
+    
+    
+    DT::datatable(weather_table,
+                  extensions = "Scroller",
+                  filter = "top", options = list(
+                    deferRender = TRUE,
+                    scrollY = 200,
+                    scroller = TRUE
+                  ),
+                  rownames = FALSE,
+                  colnames = c("Date",
+                               "Wind Avg. (mph)",
+                               "Pressure (Pa)",
+                               "Air Temperature (ºC)",
+                               "Humidity",
+                               "Illum",
+                               "UV Index",
+                               "Solar Radiation",
+                               "Rain Accumulation",
+                               "Daily Rain Accumulation",
+                               "Lightening Strikes")
     )
     
   }) 
