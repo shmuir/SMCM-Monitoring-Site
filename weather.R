@@ -3,6 +3,7 @@ library(lubridate)
 library(googlesheets4)
 library(httr)
 library(jsonlite)
+library(timetk)
 
 start <- ymd("2022-05-25")
 end <- Sys.Date()
@@ -70,7 +71,8 @@ weather <- weather %>%
   select(-epoch)
 
 weather <- weather %>%
-  mutate(date = as.Date(datetime, format = c("%Y-%m-%d")))
+  mutate(date = as.Date(datetime, format="%Y-%m-%d"))
+
 
 ## Save data
 saveRDS(weather, "weather-smcmdock.rds")

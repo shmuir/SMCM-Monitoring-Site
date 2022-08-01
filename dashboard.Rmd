@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     theme: yeti
     logo:
-    vertical_layout: scroll
+    vertical_layout: scroll 
     runtime: shiny
 ---
 
@@ -15,6 +15,7 @@ library(tidyverse)
 library(googlesheets4)
 library(viridisLite)
 library(lubridate)
+source("weather.R")
 
 ysi_data <- read_sheet("https://docs.google.com/spreadsheets/d/19E9JgnPOJ6_OhN-Het-EC9rVEH-qPRPNovM0TV-f6lQ/edit?usp=sharing") %>%
   mutate(sample_time = format(sample_time,"%H:%M:%S"))
@@ -196,7 +197,6 @@ observe({
 
 # WEATHER HISTORY {data-navmenu="WEATHER"}
 
-## Column {.sidebar}
 
 ```{r}
 weather_select <- colnames(weather_data)
