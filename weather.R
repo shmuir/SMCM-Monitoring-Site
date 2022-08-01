@@ -69,5 +69,8 @@ weather <- weather %>%
                               wind_mph >= 72 ~ "Hurricane")) %>%
   select(-epoch)
 
+weather <- weather %>%
+  mutate(date = as.Date(datetime, format = c("%Y-%m-%d")))
+
 ## Save data
 saveRDS(weather, "weather-smcmdock.rds")
