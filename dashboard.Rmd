@@ -60,11 +60,6 @@ We take measurements from the surface of the water and from the bottom. Surface 
 
 The nutrient analysis is done using a Hach DR900 Colorimeter.
 
-```{r, echo = F, out.width = '100%', fig.align = 'center'}
-#knitr::include_graphics('www/')
-```
-
-
 <br>
 
 **Nitrate and phosphate analysis**
@@ -93,10 +88,12 @@ The nutrient analysis is done using a Hach DR900 Colorimeter.
 8. When the timer expires, place the prepared sample cell into the cell holder and select Read. The display will show the sample PO4 concentration in mg/l.
 9. Throw away reagent pillow foil, dump prepared sample into the PO4 waste bottle, and rinse cells well with clean water.
 
-```{r}
-#show picture
-#knitr::include_graphics()
+<br>
+
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+knitr::include_graphics('www/hatch.jpg')
 ```
+
 
 # TSS FILTERING {data-navmenu="METHODS"}
 
