@@ -5,8 +5,8 @@ output:
     theme: yeti
     logo:
     vertical_layout: scroll 
-    runtime: shiny
     self_contained: false
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -33,6 +33,9 @@ nutrient_dattab <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4
   mutate(sample_time = format(sample_time,"%H:%M:%S"),
          date_time = ymd_hms(paste(sample_date, sample_time)))
 
+tss_data <- read_sheet("https://docs.google.com/spreadsheets/d/1givSyvd-cggWFtIxIV0yIa8yPkoEljrFQAgQekUGyvc/edit?usp=sharing") %>%
+  mutate(date = ymd(sample_date))
+
 weather_data <- read_rds("weather-smcmdock.rds")
 ```
 
@@ -47,32 +50,78 @@ knitr::include_graphics('www/river_pan.JPG')
 say some stuff
 
 
-# METHODS
+# YSI SAMPLING {data-navmenu="METHODS"}
 
-### YSI Sampling
+Some of the water quality measurements are taken using a YSI sonde. A sonde is commonly defined as a group of sensors configured together, which typically have a single recording unit or electronic data logger to record the output from the multiple sensors. Sensors/probes are available for measurement of many physical properties and chemical constituents such as temperature, specific conductance, DO, pH, etc. Each sonde has a probe guard, which protects the sensors during field use.
 
-Talk about it here
+We take measurements from the surface of the water and from the bottom. Surface readings are taken by lowering the unit into the water just below the surface and held there until the readings stabilize. To take the bottom readings,lower to the bottom and the lift so the sensor is not touching the bottom.
 
-```{r}
-#show picture of YSI
-#knitr::include_graphics()
+# NUTRIENT SAMPLING {data-navmenu="METHODS"}
+
+The nutrient analysis is done using a Hach DR900 Colorimeter.
+
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+#knitr::include_graphics('www/')
 ```
 
 
+<br>
 
-### Nutrient Sampling
+**Nitrate and phosphate analysis**
 
-Talk about it here
+1. Sample rinse sample clean bottle three times, then collect water.
+2. Turn the colorimeter on. Select Options, Favorites/User Programs,  351 N, Nitrate LR. Select Start
+3. Prepare the sample: fill a sample cell with 10 ml of sample water.
+4. Put on latex/nitrile gloves. Add the contents of one Nitraver 6 NO3 powder pillow and put the stopper on the cell. 
+5. Select Options, Start Timer, Timer 1: 1:00 and shake the cell vigorously until the timer goes off. Some powder may not dissolve. Undissolved powder will not affect results. Start Timer 5: 5:00 to let the reagent react with the sample.
+6. During this time, prepare the blank. Fill another cell with sample water to the 10 ml line and make sure the sample cell is clean. 
+7. Remove the cap from the colorimeter, place the cell into the cell holder, and select Zero. The display should show 0.0 mg/l NO3.  
+8. Within 1 minute after the timer expires, place the prepared sample cell into the cell holder and select Read. The display will show the sample NO3 concentration in mg/l.
+9. Throw away reagent pillow foil, dump prepared sample into the NO3 waste bottle, and rinse cells well with clean water.
+
+<br>
+
+**PO4 analysis**
+
+1. Sample rinse sample clean bottle three times, then collect water.
+2. Turn the colorimeter on. Select Options, Favorites/User Programs, 490 P React. PV. Select Start
+3. Prepare the sample: fill a sample cell with 10 ml of sample water.
+4. Put on latex/nitrile gloves. Add the contents of one PO4 powder pillows and put the stopper on the cell. Immediately shake vigorously for 20-30 seconds.
+5. Select Options, Start Timer, Timer 1: 2:00 and set the sample down. 
+6. During this time, prepare the blank. Fill another cell with sample water to the 10 ml line and make sure the sample cell is clean. 
+7. Remove the cap from the colorimeter, place the cell into the cell holder, and select Zero. The display should show 0.0 mg/l PO4.  
+8. When the timer expires, place the prepared sample cell into the cell holder and select Read. The display will show the sample PO4 concentration in mg/l.
+9. Throw away reagent pillow foil, dump prepared sample into the PO4 waste bottle, and rinse cells well with clean water.
 
 ```{r}
 #show picture
 #knitr::include_graphics()
 ```
 
+# TSS FILTERING {data-navmenu="METHODS"}
+
+**TSS Filtering**
+
+1. To collect a sample, rinse a 1-l nalgene container three times with sample water, then fill with sample water.
+2. Label a foil packet using a sharpie with the location, date and time, filter number, and volume filtered. 
+3. Center a prenumbered, combusted, weighed 47mm GFF Filter Pad on the filter holder (frit) number side down if number is visible. Secure the filtration funnel to the frit.
+4. Rinse a graduated cylinder three times with sample water.
+5. Measuring with a graduated cylinder and a funnel, pour 200 mL of sample water into the filter holder. Ensure it is tight before pouring to avoid spills. Clogging the filter pad is not recommended or necessary. 
+6. Check that the two hoses–from the vacuum pump and from the filtration rig– are securely clipped into the Nalgene 20 liter jug. Check the origin of each hose, and DO NOT plug the vacuum hose into the entrance labeled for water. 
+7. Turn on the pump using the labeled switch on the right-hand side of the machine. 
+8. Rinse the filter funnel unit twice with deionized (DI) water after the initial volume has filtered through the pad. This step is VERY IMPORTANT because it rinses out the salt. 
+9. Turn off the pump before unscrewing the filtration tunnel and removing the filter pad. Using 2 forceps and without touching the material on the filter, fold the filter in half with the filtered material on the inside of the fold. Remove the folded pad from the filtration unit with forceps and place inside your prelabeled aluminum foil packet (see example to the right). Do not touch the filter pad or the inside of the foil pouch with your fingers.  Sometimes the folded filter pad will pop open as you are attempting to place it in the foil packet.  If this occurs, use forceps to hold the folded filter pad in half and then fold the aluminum packet closed.  Make sure that only the outside of the folded pad (area without filtered material directly on it or visible) is touching the foil. If you have not already done so, fold all sides of the aluminum packet closed. 
+10. Record the date, time, location, filter number, and total volume filtered on each foil packet and on the data sheet.
+11. Label a zip lock freezer bag using a black sharpie marker with the date and “SMCM docks”, place the packet into the freezer bag, and store on ice until freezing.
+12. Unclip the water and vacuum hoses from the jug. Some water may come out of the water hose. Place the tip of the hose in a small container to avoid spills.
+13. Unscrew the top from the jug. Both ports will be visible on the underside, one with a short length of tubing. Use a soft sponge and deionized water to clean the outside of the tube, but do not allow water to drip on the vacuum port.
+14. Dispose of the processed sample water, and rinse the inside of the 20 liter jug with deionized water. This cleaning is only necessary after all of a day’s samples have been processed, and does not need to be done between sites. Allow all parts of the system to dry overnight before use the next day. 
 
 # YSI {data-navmenu="VISUALIZATIONS"}
 
 ## Column {.sidebar}
+
+**YSI**
 
 ```{r}
 # creating a sidebar where the user can choose which country they want to view
@@ -138,6 +187,8 @@ DT::renderDataTable({
 
 ## Column {.sidebar}
 
+**Nutrients**
+
 ```{r}
 dateRangeInput("date_time",
                  "Select a Date Range",
@@ -179,6 +230,61 @@ renderPlot({
                                "NO3 low",
                                "NO3 high", 
                                "PO4")
+    )
+    
+  }) 
+```
+
+
+# TSS {data-navmenu="VISUALIZATIONS"}
+
+## Column {.sidebar}
+
+**Total Suspended Solids**
+
+```{r}
+dateRangeInput("date",
+                 "Select a Date Range",
+                 start = "2022-05-25")
+```
+
+TSS is the amount of total suspended solids in the water, measured in mg/L. These solids are particles that are large enough to not pass through a filter.
+
+*Total Suspended Solids (mg/L) = (weight before filtering – weight after filtering) / sample volume in litres*
+
+
+
+## Column {data-width="1000"}
+```{r}
+renderPlot({
+  tss_data %>%
+    filter(date >= as.Date(input$date[1]),
+           date <= as.Date(input$date[2])) %>%
+    ggplot(., aes_string(x="date", y="mg_tss")) +
+      geom_point(size = 2.5) +
+      geom_line() +
+      labs(x="", y="mg total suspended solids") +
+      theme_linedraw() +
+    scale_color_viridis_d(begin = 0.2, end = 0.8)
+    
+  })
+  
+ DT::renderDataTable({
+    
+    tss_tab <- tss_data %>% 
+      select(date, mg_tss)
+    
+    
+    DT::datatable(tss_tab,
+                  extensions = "Scroller",
+                  filter = "top", options = list(
+                    deferRender = TRUE,
+                    scrollY = 200,
+                    scroller = TRUE
+                  ),
+                  rownames = FALSE,
+                  colnames = c("Date",
+                               "mg TSS")
     )
     
   }) 
