@@ -58,7 +58,14 @@ mod_output_par <- licor_data %>%
 
 kd <- mod_output_par[, c(1:2, 5)]
 
+bod <- read_sheet("https://docs.google.com/spreadsheets/d/1Neholjx6hpEGEtoLRAPy5IQS1-N5VYBqcIHfuYX2G3c/edit#gid=0") %>%
+  select(final_date, depth, treatment, do_difference_mg_l, replicate) %>%
+  group_by(final_date, depth, replicate) %>%
+  pivot_wider(names_from = treatment, values_from = do_difference_mg_l) %>%
+  rename(npp_mg_o2_l_d = light, r_mg_o2_l_d = dark) %>%
+  mutate(gpp_mg_o2_l_d = npp_mg_o2_l_d + r_mg_o2_l_d)
 ```
+
 
 # OVERVIEW 
 
@@ -73,15 +80,38 @@ say some stuff
 
 # YSI SAMPLING {data-navmenu="METHODS"}
 
+**YSI procedures to measure:** <br>
+- *Dissolved oxygen* <br>
+- *Temperature* <br>
+- *Salinity* <br>
+- *pH*
+
 Some of the water quality measurements are taken using a YSI sonde. A sonde is commonly defined as a group of sensors configured together, which typically have a single recording unit or electronic data logger to record the output from the multiple sensors. Sensors/probes are available for measurement of many physical properties and chemical constituents such as temperature, specific conductance, DO, pH, etc. Each sonde has a probe guard, which protects the sensors during field use.
 
-We take measurements from the surface of the water and from the bottom. Surface readings are taken by lowering the unit into the water just below the surface and held there until the readings stabilize. To take the bottom readings,lower to the bottom and the lift so the sensor is not touching the bottom.
+We take measurements from the surface of the water and from the bottom. Surface readings are taken by lowering the unit into the water just below the surface and held there until the readings stabilize. To take the bottom readings, lower to the bottom and the lift so the sensor is not touching the bottom.
+
+Row {data-width=1000}
+----------------------
+
+```{r, echo = F, out.width = '30%', fig.align = 'center'}
+knitr::include_graphics('www/ysi.jpg')
+```
+
 
 # NUTRIENT SAMPLING {data-navmenu="METHODS"}
 
-The nutrient analysis is done using a Hach DR900 Colorimeter.
+## Column {.sidebar}
+The nutrient analysis is done using a Hatch DR900 Colorimeter.
+
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+knitr::include_graphics('www/hatch.jpg')
+```
 
 <br>
+
+Info about the hatch colorimeter
+
+## Column {data-width='1000'}
 
 **Nitrate and phosphate analysis**
 
@@ -109,12 +139,6 @@ The nutrient analysis is done using a Hach DR900 Colorimeter.
 8. When the timer expires, place the prepared sample cell into the cell holder and select Read. The display will show the sample PO4 concentration in mg/l.
 9. Throw away reagent pillow foil, dump prepared sample into the PO4 waste bottle, and rinse cells well with clean water.
 
-<br>
-
-```{r, echo = F, out.width = '100%', fig.align = 'center'}
-knitr::include_graphics('www/hatch.jpg')
-```
-
 
 # TSS FILTERING {data-navmenu="METHODS"}
 
@@ -138,6 +162,39 @@ knitr::include_graphics('www/hatch.jpg')
 # Licor {data-navmenu="METHODS"}
 
 methods
+
+# Ecosystem Production {data-navmenu="METHODS"}
+
+## Column {.sidebar data-width=325}
+
+**Ecosystem Production**
+
+One technique used to measure ecosystem production is the light/dark bottle method. In clear-glass "light" bottles, we can incubate water from the estuary over a period of time to indirectly measure photosynthesis, or gross primary productivity. If photosynthesis is greater than respiration in the light bottle, then O2 will increase over time. However, whole-community respiration (R) is still occurring in the light bottles, because all organisms living in the water are respiring. This means that a light bottle gives you an estimate of net ecosystem productivity (NEP).
+
+Using another set of "dark" bottles (painted to prevent light from entering), we can fill them with river water and let them incubate over time. Since photosynthesis is blocked in these bottles, O2 declines through time solely as a result of decomposition and respiration of carbon compounds floating in the water (by bacteria, plankton, macroinvertebrates). Thus, the dark bottles give us a rate of total ecosystem respiration through time (R).
+
+The difference between the final oxygen concentrations between the light and dark bottles is thus a measure of total photosynthesis, or gross primary production (GPP). Therefore, with some relatively simple measurements of O2, we are capable of teasing apart the individual components of estuary metabolism.
+
+## Column {data-width=1000}
+
+**Procedure**
+
+1. Take YSI readings at both the surface and bottom. Be sure to measure the depth of the water column. Record these observations on your datasheet.
+2. Secure a standard garden hose to the provided attachment of the portable utility pump. Using a line marked with depth, lower the pump beneath the surface, and turn on using the button beneath the handle. DO NOT DRY RUN THE PUMP.  
+3. Lower the pump carefully until it just barely touches the bottom, then lift it up so that it is not touching the bottom. Allow the water to run for a few seconds to flush any sediment out of the pump.
+4. Fill one light and one dark BOD bottle with bottom sample water by inserting the tip of the hose into the bottom. Let the water overflow for several minutes to rinse the bottle and force out any air bubbles. Keep filling the bottle as you withdraw the tube so that the bottle is completely filled. Place the stopper on the bottle.
+5. Repeat for your light bottle. 
+6. Take both bottles to the BOD probe station. Insert the BOD probe into the top of the bottle, turn the stirrer on with the red switch, and take an initial DO measurement. Turn the switch back off before removing the probe. Repeat for your other bottle.
+7. Using the carabiner clips, attach the bottom light and dark bottles to the lowest loop of the pre-prepared line, closer to the anchor than the buoy. This line will allow the bottles to sit at their initial depth, and temperature fluctuations inside the bottles will match their natural environment.
+8. Collect water from the middle of the water column (calculated from actual depth recorded during YSI stage) and repeat the steps above. Carefully lift the line out of the water, secure both bottles to the mid-line loop using carabiners, AND attach the wave gauge between the bottles using a carabiner. This will measure the change in bottle depth during the tidal cycle. 
+9. Collect water from just below the surface of the water column and repeat the steps above. Carefully lift the line out of the water, secure both bottles to the surface loop using carabiners, and lower back into the water.
+10. Using a boat hook, lift the entire line (from just below the buoy) and move it approximately five feet from the dock. This is to ensure the bottles will not fall under the dock’s shadow, altering photosynthesis and production measurements. 
+11. Allow the bottles to incubate for 4 hours.
+12. Return after the determined time period, and use the boat hook to pull the entire line back within arm’s length of the dock. 
+13. Lift the buoy and top third of the line onto the dock, and unclip the surface light and dark bottles. Lower the line back into the water to keep the middle and bottom bottles to keep them at their environmental temperature, which prevents last-minute P and R changes. 
+14. Take both bottles to the BOD probe station, and repeat the instructions in step 6 to find the final DO measurement.
+15. Repeat steps 13 and 14 with the middle and bottom water bottles, lifting the full anchor and line onto the dock once the bottom bottles have been removed.
+
 
 # YSI {data-navmenu="VISUALIZATIONS"}
 
@@ -274,8 +331,6 @@ TSS is the amount of total suspended solids in the water, measured in mg/L. Thes
 
 *Total Suspended Solids (mg/L) = (weight before filtering – weight after filtering) / sample volume in litres*
 
-
-
 ## Column {data-width="1000"}
 ```{r}
 renderPlot({
@@ -339,6 +394,42 @@ renderPlot({
 })
 ```
 
+# Ecosystem Production {data-navmenu="VISUALIZATIONS"}
+
+## Column {.sidebar}
+
+**Ecosystem Production**
+
+```{r}
+dateRangeInput("final_date",
+                 "Select a Date Range",
+                 start = "2022-06-13")
+```
+
+<br>
+
+**Photosynthesis**: 6CO2 + 6H2O ⇒ C6H12O6 + 6O2 <br>
+<br>
+**Aerobic respiration**: C6H12O6 + 6O2 ⇒ 6CO2 + 6H2O
+
+In most ecosystems, photosynthesis and respiration are occurring simultaneously. Photosynthesis adds O2 to the water, and respiration removes it. These familiar photosynthesis and aerobic respiration equations show that by measuring changes in O2, we can determine the rates of photosynthesis and respiration in an ecosystem.
+
+## Column {data-width="1000"}
+
+```{r}
+renderPlot({
+  bod %>%
+    filter(final_date >= as.Date(input$final_date[1]),
+           final_date <= as.Date(input$final_date[2]),
+           replicate == "a") %>%
+ggplot(., aes_string(x = "final_date", y = "gpp_mg_o2_l_d", color = "depth")) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  labs(x = "") +
+  theme_linedraw() +
+  scale_colour_viridis_d(begin = 0.2, end = 0.7)
+  })
+```
 
 
 # CURRENT WEATHER {data-navmenu="WEATHER"}
@@ -372,6 +463,17 @@ weather_select <- weather_select[weather_select %in%
 
 
 ```{r}
-
+renderPlot({
+  bod %>%
+    filter(final_date >= as.Date(input$final_date[1]),
+           final_date <= as.Date(input$final_date[2]),
+           replicate == "a") %>%
+ggplot(., aes_string(x = "final_date", y = "gpp_mg_o2_l_d", color = "depth")) +
+  geom_point(size = 2.5) +
+  geom_line() +
+  labs(x = "") +
+  theme_linedraw() +
+  scale_colour_viridis_d(begin = 0.2, end = 0.7)
+  })
 ```
 
