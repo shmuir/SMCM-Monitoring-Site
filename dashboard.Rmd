@@ -18,7 +18,10 @@ library(googlesheets4)
 library(viridisLite)
 library(lubridate)
 library(httr)
+library(broom)
 source("weather.R")
+
+#Read in data
 
 ysi_data <- read_sheet("https://docs.google.com/spreadsheets/d/19E9JgnPOJ6_OhN-Het-EC9rVEH-qPRPNovM0TV-f6lQ/edit?usp=sharing") %>%
   mutate(sample_time = format(sample_time,"%H:%M:%S"))
@@ -37,6 +40,24 @@ tss_data <- read_sheet("https://docs.google.com/spreadsheets/d/1givSyvd-cggWFtIx
   mutate(date = ymd(sample_date))
 
 weather_data <- read_rds("weather-smcmdock.rds")
+
+lm_fun_par <- function(df) lm(-log(prop_air) ~ depth_m, data = df)
+
+licor_data <- read_sheet("https://docs.google.com/spreadsheets/d/1zz6CgaQ7AfsfxxM9EBBqt_9tstSGnJvC6InhXsO0Pm4/edit?usp=sharing") 
+
+mod_output_par <- licor_data %>%
+  select(sample_date, depth_m, prop_air) %>%
+  group_by(sample_date) %>%
+  nest() %>%
+  mutate(model = map(data, lm_fun_par),
+         tidied = map(model, tidy)) %>%
+  unnest(tidied) %>%
+  filter(term == "depth_m") %>%
+  rename(kd = estimate) %>%
+  filter(p.value <= 0.05, kd >= 0.0)
+
+kd <- mod_output_par[, c(1:2, 5)]
+
 ```
 
 # OVERVIEW 
@@ -113,6 +134,10 @@ knitr::include_graphics('www/hatch.jpg')
 12. Unclip the water and vacuum hoses from the jug. Some water may come out of the water hose. Place the tip of the hose in a small container to avoid spills.
 13. Unscrew the top from the jug. Both ports will be visible on the underside, one with a short length of tubing. Use a soft sponge and deionized water to clean the outside of the tube, but do not allow water to drip on the vacuum port.
 14. Dispose of the processed sample water, and rinse the inside of the 20 liter jug with deionized water. This cleaning is only necessary after all of a day’s samples have been processed, and does not need to be done between sites. Allow all parts of the system to dry overnight before use the next day. 
+
+# Licor {data-navmenu="METHODS"}
+
+methods
 
 # YSI {data-navmenu="VISUALIZATIONS"}
 
@@ -286,6 +311,34 @@ renderPlot({
     
   }) 
 ```
+
+# Licor {data-navmenu="VISUALIZATIONS"}
+
+## Column {.sidebar}
+
+**Licor**
+
+```{r}
+dateRangeInput("sampledate",
+                 "Select a Date Range",
+                 start = "2022-05-25")
+```
+
+## Column {data-width="1000"}
+
+```{r}
+renderPlot({
+  kd %>%
+    rename(sampledate = sample_date) %>%
+    filter(sampledate >= as.Date(input$sampledate[1]),
+           sampledate <= as.Date(input$sampledate[2])) %>%
+  ggplot(., aes_string(x = "sampledate", y = "kd")) +
+  geom_bar(stat = "identity", fill = "#21918c") +
+    labs(x = "", y = expression("K"[d]~"(m"^-1*")")) +
+  theme_linedraw()
+})
+```
+
 
 
 # CURRENT WEATHER {data-navmenu="WEATHER"}
