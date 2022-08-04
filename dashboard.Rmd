@@ -3,7 +3,7 @@ title: "SMCM DOCK MONITORING DASHBOARD"
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
-    logo:
+    logo: www/flag_logo.png
     vertical_layout: scroll 
     self_contained: false
 runtime: shiny
@@ -39,7 +39,12 @@ nutrient_dattab <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4
 tss_data <- read_sheet("https://docs.google.com/spreadsheets/d/1givSyvd-cggWFtIxIV0yIa8yPkoEljrFQAgQekUGyvc/edit?usp=sharing") %>%
   mutate(date = ymd(sample_date))
 
-weather_data <- read_rds("weather-smcmdock.rds")
+weather_data <- read_rds("weather-smcmdock.rds") %>%
+  tidyr::separate(., datetime, c("date", "time"), sep = " ") %>%
+  mutate(day = as.Date(date)) %>%
+  group_by(day) %>% 
+  summarise(across(c(wind_avg, pressure, airtemp, rel_hum, uv_index, rain_accum, strike_ct), mean))
+
 
 lm_fun_par <- function(df) lm(-log(prop_air) ~ depth_m, data = df)
 
@@ -444,36 +449,36 @@ knitr::include_url("https://tempestwx.com/station/69060/", height = 800)
 
 # WEATHER HISTORY {data-navmenu="WEATHER"}
 
+## Column {.sidebar}
 
 ```{r}
 weather_select <- colnames(weather_data)
 weather_select <- weather_select[weather_select %in% 
-                                 c('wind_avg', "wind_mph", "pressure", "airtemp", "rel_hum", "illum", "uv_index", "solar_rad", "rain_accum","day_rain_accum", "strike_ct")]
+                                 c('wind_avg', "pressure", "airtemp", "rel_hum", "uv_index", "rain_accum", "strike_ct")]
   
   selectInput(
     "y_variable",
     label = "Y Variable",
     choices = weather_select,
-    selected = 'date')
+    selected = 'day')
   
-  dateRangeInput("date",
+  dateRangeInput("day",
                  "Select a Date Range",
                  start = "2022-05-25")
 ```
 
+## Column {data-width="1000"}
 
 ```{r}
 renderPlot({
-  bod %>%
-    filter(final_date >= as.Date(input$final_date[1]),
-           final_date <= as.Date(input$final_date[2]),
-           replicate == "a") %>%
-ggplot(., aes_string(x = "final_date", y = "gpp_mg_o2_l_d", color = "depth")) +
-  geom_point(size = 2.5) +
-  geom_line() +
+  weather_data %>%
+    filter(day >= as.Date(input$day[1]),
+           day <= as.Date(input$day[2])) %>%
+ggplot(., aes_string(x = "day", y = input$y_variable)) +
+  geom_point(size = 2.5, color = "#21918c") +
+  geom_line(color = "#21918c") +
   labs(x = "") +
-  theme_linedraw() +
-  scale_colour_viridis_d(begin = 0.2, end = 0.7)
+  theme_linedraw()
   })
 ```
 
