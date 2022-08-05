@@ -3,7 +3,7 @@ title: "SMCM DOCK MONITORING DASHBOARD"
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
-    logo: www/flag_logo.png
+    logo: 
     vertical_layout: scroll 
     self_contained: false
 runtime: shiny
