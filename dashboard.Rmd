@@ -77,7 +77,7 @@ bod <- read_sheet("https://docs.google.com/spreadsheets/d/1Neholjx6hpEGEtoLRAPy5
 #### WELCOME TO THE SMCM DOCK MONITORING DASHBOARD!
 
 ```{r, echo = F, out.width = '100%', fig.align = 'center'}
-knitr::include_graphics('www/river_pan.JPG')
+knitr::include_graphics('www/waterfront.jpg')
 ```
 
 say some stuff
@@ -147,7 +147,24 @@ Info about the hatch colorimeter
 
 # TSS FILTERING {data-navmenu="METHODS"}
 
+## Column {.sidebar}
+
 **TSS Filtering**
+
+To filter for TSS, we use a GAST vacuum pump & water rig and 47mm Whatman GF/F circle filter pads.
+
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+knitr::include_graphics('www/filter.jpg')
+```
+<br>
+```{r, echo=F, out.width='100%', fig.align='center'}
+knitr::include_graphics('www/TSS.jpg')
+```
+
+
+## Column {data-width='1000'}
+
+**Procedures**
 
 1. To collect a sample, rinse a 1-l nalgene container three times with sample water, then fill with sample water.
 2. Label a foil packet using a sharpie with the location, date and time, filter number, and volume filtered. 
@@ -164,11 +181,11 @@ Info about the hatch colorimeter
 13. Unscrew the top from the jug. Both ports will be visible on the underside, one with a short length of tubing. Use a soft sponge and deionized water to clean the outside of the tube, but do not allow water to drip on the vacuum port.
 14. Dispose of the processed sample water, and rinse the inside of the 20 liter jug with deionized water. This cleaning is only necessary after all of a day’s samples have been processed, and does not need to be done between sites. Allow all parts of the system to dry overnight before use the next day. 
 
-# Licor {data-navmenu="METHODS"}
+# LICOR {data-navmenu="METHODS"}
 
 methods
 
-# Ecosystem Production {data-navmenu="METHODS"}
+# ECOSYSTEM PRODUCTION {data-navmenu="METHODS"}
 
 ## Column {.sidebar data-width=325}
 
@@ -372,7 +389,7 @@ renderPlot({
   }) 
 ```
 
-# Licor {data-navmenu="VISUALIZATIONS"}
+# LICOR {data-navmenu="VISUALIZATIONS"}
 
 ## Column {.sidebar}
 
@@ -399,7 +416,7 @@ renderPlot({
 })
 ```
 
-# Ecosystem Production {data-navmenu="VISUALIZATIONS"}
+# ECOSYSTEM PRODUCTION {data-navmenu="VISUALIZATIONS"}
 
 ## Column {.sidebar}
 
