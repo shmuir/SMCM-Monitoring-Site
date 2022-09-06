@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     theme: yeti
     logo: 
-    vertical_layout: scroll 
+    vertical_layout: scroll
     self_contained: false
 runtime: shiny
 ---
@@ -183,7 +183,7 @@ knitr::include_graphics('www/TSS.jpg')
 
 # LICOR {data-navmenu="METHODS"}
 
-methods
+Licor is used to take a light profile of the water column. 
 
 # ECOSYSTEM PRODUCTION {data-navmenu="METHODS"}
 
