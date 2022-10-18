@@ -19,6 +19,7 @@ library(viridisLite)
 library(lubridate)
 library(httr)
 library(broom)
+library(rsconnect)
 source("weather.R")
 
 #Read in data
@@ -229,7 +230,6 @@ The difference between the final oxygen concentrations between the light and dar
 select_values <- colnames(ysi_data)
 select_values <- select_values[select_values %in% 
                                  c('salinity', "ph", "temp_c", "do_percent", "do_mg_l", "salinity")]
-
 
 selectInput(
     "y_var",
