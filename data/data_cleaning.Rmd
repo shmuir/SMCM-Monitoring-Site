@@ -1,0 +1,64 @@
+---
+title: "data_cleaning"
+author: "Sam Muir"
+date: "2022-10-25"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+- Want to clean data here and save as csv to data folder; read in data in the dashboard.Rmd
+- or could do the same as the weather.R script
+
+```{r}
+#read in data
+ysi_data <- read_sheet("https://docs.google.com/spreadsheets/d/19E9JgnPOJ6_OhN-Het-EC9rVEH-qPRPNovM0TV-f6lQ/edit?usp=sharing") %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"))
+
+nutrient_data <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4ZvZrWyQ9-EZjXdom1vREmvO7BC4zhhsg1I/edit?usp=sharing") %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"),
+         date_time = ymd_hms(paste(sample_date, sample_time))) %>%
+  pivot_longer(., 4:7, names_to = "nutrient") %>%
+  rename(mg_l = value)
+
+nutrient_dattab <- read_sheet("https://docs.google.com/spreadsheets/d/1ywOnrc0v4ZvZrWyQ9-EZjXdom1vREmvO7BC4zhhsg1I/edit?usp=sharing") %>%
+  mutate(sample_time = format(sample_time,"%H:%M:%S"),
+         date_time = ymd_hms(paste(sample_date, sample_time)))
+
+tss_data <- read_sheet("https://docs.google.com/spreadsheets/d/1givSyvd-cggWFtIxIV0yIa8yPkoEljrFQAgQekUGyvc/edit?usp=sharing") %>%
+  mutate(date = ymd(sample_date))
+
+weather_data <- read_rds("weather-smcmdock.rds") %>%
+  tidyr::separate(., datetime, c("date", "time"), sep = " ") %>%
+  mutate(day = as.Date(date)) %>%
+  group_by(day) %>% 
+  summarise(across(c(wind_avg, pressure, airtemp, rel_hum, uv_index, rain_accum, strike_ct), mean))
+
+
+lm_fun_par <- function(df) lm(-log(prop_air) ~ depth_m, data = df)
+
+licor_data <- read_sheet("https://docs.google.com/spreadsheets/d/1zz6CgaQ7AfsfxxM9EBBqt_9tstSGnJvC6InhXsO0Pm4/edit?usp=sharing") 
+
+mod_output_par <- licor_data %>%
+  select(sample_date, depth_m, prop_air) %>%
+  group_by(sample_date) %>%
+  nest() %>%
+  mutate(model = map(data, lm_fun_par),
+         tidied = map(model, tidy)) %>%
+  unnest(tidied) %>%
+  filter(term == "depth_m") %>%
+  rename(kd = estimate) %>%
+  filter(p.value <= 0.05, kd >= 0.0)
+
+kd <- mod_output_par[, c(1:2, 5)]
+
+bod <- read_sheet("https://docs.google.com/spreadsheets/d/1Neholjx6hpEGEtoLRAPy5IQS1-N5VYBqcIHfuYX2G3c/edit#gid=0") %>%
+  select(final_date, depth, treatment, do_difference_mg_l, replicate) %>%
+  group_by(final_date, depth, replicate) %>%
+  pivot_wider(names_from = treatment, values_from = do_difference_mg_l) %>%
+  rename(npp_mg_o2_l_d = light, r_mg_o2_l_d = dark) %>%
+  mutate(gpp_mg_o2_l_d = npp_mg_o2_l_d + r_mg_o2_l_d)
+```
+
