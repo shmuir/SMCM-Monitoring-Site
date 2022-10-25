@@ -115,7 +115,7 @@ knitr::include_graphics('www/hatch.jpg')
 
 <br>
 
-Info about the hatch colorimeter
+ Info about the hatch colorimeter
 
 ## Column {data-width='1000'}
 
