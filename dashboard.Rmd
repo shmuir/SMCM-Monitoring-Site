@@ -6,7 +6,6 @@ output:
     logo: 
     vertical_layout: scroll
     self_contained: false
-runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
