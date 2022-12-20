@@ -1,0 +1,43 @@
+---
+title: "map"
+author: "Sam Muir"
+date: "2022-11-10"
+output: html_document
+---
+
+```{r}
+library(RgoogleMaps)
+library(tidyverse)
+library(usmap)
+library(maptools)
+
+```
+
+```{r}
+x <- c("38.189646")
+y <- c("-76.433142")
+site <- c("SMCM Dock")
+
+SP <- data.frame (site, lat  = c("38.189646"),
+                  lon = c("-76.433142")
+                  ) %>%
+  mutate(lat = as.numeric(lat),
+         lon = as.numeric(lon))
+
+transform <- usmap_transform(SP)
+```
+
+```{r}
+plot_usmap("counties", fill = "lightgreen", alpha = 0.25,
+           include = c("24037", "24009", "24017", "24033"),
+           labels = T) +
+  geom_point(data = transform, aes(x = x, y = y),
+             size = 4) +
+  theme(legend.position = "right", text = element_text(size = 12))
+```
+
+
+```{r}
+bubbleMap(SP, coords = c("x", "y"), crs = sp::CRS("+proj=longlat +datum=WGS84"))
+```
+
