@@ -95,11 +95,6 @@ renderLeaflet({leaflet() %>%
 ## Column {data-width=500}
 
 
-```{r}
-
-```
-
-
 # YSI SAMPLING {data-navmenu="METHODS"}
 
 **YSI procedures to measure:** <br>
