@@ -1,5 +1,5 @@
 ---
-title: "SMCM DOCK MONITORING DASHBOARD"
+title: "ST. MARY'S RIVER MONITORING DASHBOARD"
 output: 
   flexdashboard::flex_dashboard:
     theme: yeti
@@ -20,6 +20,7 @@ library(lubridate)
 library(httr)
 library(broom)
 library(rsconnect)
+library(leaflet)
 source("weather.R")
 
 #Read in data
@@ -75,13 +76,28 @@ bod <- read_sheet("https://docs.google.com/spreadsheets/d/1Neholjx6hpEGEtoLRAPy5
 
 # OVERVIEW 
 
-#### WELCOME TO THE SMCM DOCK MONITORING DASHBOARD!
+#### WELCOME TO THE ST. MARY'S RIVER MONITORING DASHBOARD!
 
-```{r, echo = F, out.width = '100%', fig.align = 'center'}
+```{r, echo = F, out.width = '100%', fig.align = 'left'}
 knitr::include_graphics('www/waterfront.jpg')
 ```
 
 say some stuff
+
+```{r, echo = F, out.width = '100%', fig.align = 'center'}
+renderLeaflet({leaflet() %>%
+  addTiles() |>
+  addMarkers(lng = -76.433142, lat = 38.189646)|> 
+  addMiniMap()
+})
+```
+
+## Column {data-width=500}
+
+
+```{r}
+
+```
 
 
 # YSI SAMPLING {data-navmenu="METHODS"}
